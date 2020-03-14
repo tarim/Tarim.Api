@@ -43,6 +43,14 @@ namespace Tarim.Api
                     }
                 });
             });
+
+            services.AddAuthentication().AddGoogle(
+                options => {
+                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
+
+                    options.ClientId = googleAuth["ClientId"];
+                    options.ClientSecret = googleAuth["ClientSecret"];
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
