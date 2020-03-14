@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Name\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tarim.Api.Infrastructure.Common\Tarim.Api.Infrastructure.Common.csproj" />
+  </ItemGroup>
+</Project>
