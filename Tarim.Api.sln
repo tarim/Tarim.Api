@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarim.Api.Infrastructure.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarim.Api.Infrastructure.Model", "Tarim.Api.Infrastructure.Model\Tarim.Api.Infrastructure.Model.csproj", "{89E34272-E6E8-48F3-B695-8939D620E7F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarim.Api.Infrastructure.Service", "Tarim.Api.Infrastructure.Service\Tarim.Api.Infrastructure.Service.csproj", "{C2BF214C-C77F-49CD-B489-A2FFC03B4DB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,5 +39,9 @@ Global
 		{89E34272-E6E8-48F3-B695-8939D620E7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E34272-E6E8-48F3-B695-8939D620E7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E34272-E6E8-48F3-B695-8939D620E7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2BF214C-C77F-49CD-B489-A2FFC03B4DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2BF214C-C77F-49CD-B489-A2FFC03B4DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2BF214C-C77F-49CD-B489-A2FFC03B4DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2BF214C-C77F-49CD-B489-A2FFC03B4DB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
