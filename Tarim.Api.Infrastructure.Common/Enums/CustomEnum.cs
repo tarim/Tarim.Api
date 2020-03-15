@@ -1,11 +1,11 @@
 ﻿using System;
 namespace Tarim.Api.Infrastructure.Common.Enums
 {
-    public enum SexType
+    public enum GenderType
     {
-        Male=0,
-        Female=1,
-        Both=2
+        Oghul=0,
+        Qiz=1,
+        Ortaq=2
     }
 
     public enum ProfileType
@@ -23,5 +23,13 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Hold=2,
         Disabled=3,
         Deleted=4
+    }
+
+    public enum OriginationType
+    {
+        Uyghurche = 0,
+        Erepche = 1,
+        Parische = 2,
+        Bashqa = 3
     }
 }

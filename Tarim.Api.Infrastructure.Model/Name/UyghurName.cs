@@ -14,9 +14,13 @@ namespace Tarim.Api.Infrastructure.Model.names
 
         public string Name { get; set; }
 
-        public string Origin { get; set; }
+        public OriginationType Origination { get; set; }
 
-        public SexType Sex { get; set; }
+        public GenderType Gender { get; set; }
+
+        public StatusType Status { get; set; }
+
+        public string RelatedName { get; set; }
 
         public bool IsFamilyName { get; set; }
 

@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Tarim.Api.Infrastructure.DataProvider;
+using Tarim.Api.Infrastructure.Interface;
+using Tarim.Api.Infrastructure.Service;
 
 namespace Tarim.Api
 {
@@ -27,6 +30,8 @@ namespace Tarim.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
+            services.AddSingleton<INameRepository, NameRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

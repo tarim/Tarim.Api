@@ -25,7 +25,7 @@ namespace Tarim.Api.Infrastructure.Service
         public async Task<Result<IList<UyghurName>>> GetUyghurName()
         {
             var uyghurNames = new Result<IList<UyghurName>> { Object = new List<UyghurName>() };
-            await GetResultAsync("GET_UYGHUR_NAMES",
+            await GetResultAsync("GET_NAMES",
                 rdReader =>
                 {
                     uyghurNames.Object.Read(rdReader);
