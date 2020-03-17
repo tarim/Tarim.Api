@@ -1,6 +1,10 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace Tarim.Api.Infrastructure.Common.Enums
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum GenderType
     {
         Oghul=0,
@@ -8,6 +12,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Ortaq=2
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ProfileType
     {
         Basic=0,
@@ -16,6 +21,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Owner=3
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum StatusType
     {
         Registered=0,
@@ -25,6 +31,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Deleted=4
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum OriginationType
     {
         Uyghurche = 0,

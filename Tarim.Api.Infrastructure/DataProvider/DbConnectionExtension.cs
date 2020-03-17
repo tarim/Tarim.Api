@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Tarim.Api.Infrastructure.Common.Enums;
+using Tarim.Api.Infrastructure.Model;
 using Tarim.Api.Infrastructure.Model.names;
 
 namespace Tarim.Api.Infrastructure.DataProvider
@@ -28,6 +29,40 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.IsFamilyName = rdReader.GetBoolean("is_surname");
             obj.Description = rdReader.GetString("description");
             
+        }
+
+        public static void Read(this IList<User> objList, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                var obj = new User();
+                obj.ReadAll(rdReader);
+                objList.Add(obj);
+            }
+
+        }
+
+        public static void Read(this User obj, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+               
+                obj.ReadAll(rdReader);
+               
+            }
+
+        }
+        private static void ReadAll(this User obj, IDataReader rdReader)
+        {
+            obj.Id = rdReader.GetInt("recid");
+            obj.FirstName = rdReader.GetString("first_name");
+            obj.LastName = rdReader.GetString("last_name");
+            obj.Email = rdReader.GetString("email");
+            obj.Status = rdReader.GetEnum<StatusType>("status");
+            obj.Profile = rdReader.GetEnum<ProfileType>("role");
+            obj.Phone = rdReader.GetString("phone");
+            obj.Description = rdReader.GetString("description");
+
         }
     }
 }

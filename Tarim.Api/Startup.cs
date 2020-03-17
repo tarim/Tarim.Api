@@ -32,6 +32,7 @@ namespace Tarim.Api
             services.AddControllers();
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

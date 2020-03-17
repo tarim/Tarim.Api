@@ -16,9 +16,17 @@ namespace Tarim.Api.Infrastructure.Service
             logger = log;
         }
 
-        public Task<Result<User>> FindUser(string userEmail)
+        public async Task<Result<User>> FindUser(string userEmail)
         {
-            throw new NotImplementedException();
+            var user = new Result<User> { Object = new User() };
+            await GetResultAsync("GET_USER",            
+                rdReader =>
+                {
+                    user.Object.Read(rdReader);
+                    return user;
+                },
+                GetParameter("email_in", userEmail, MySql.Data.MySqlClient.MySqlDbType.VarChar));
+            return user;
         }
     }
 }
