@@ -9,11 +9,11 @@ namespace Tarim.Api.Controllers
 {
 
     [Route("api/[controller]")]
-    public class NameController : Controller
+    public class NamesController : Controller
     {
         private readonly INameRepository _nameRepository;
 
-        public NameController(INameRepository nameRepository)
+        public NamesController(INameRepository nameRepository)
         {
             _nameRepository = nameRepository;
         }
@@ -30,7 +30,7 @@ namespace Tarim.Api.Controllers
         public async Task<IActionResult> GetAsync(string name)
         {
             var result = await _nameRepository.GetUyghurName(name);
-            return Ok(result);
+            return Ok(result.Object);
         }
 
         // POST api/values

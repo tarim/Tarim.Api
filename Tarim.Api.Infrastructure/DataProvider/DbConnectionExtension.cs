@@ -19,10 +19,21 @@ namespace Tarim.Api.Infrastructure.DataProvider
             }
 
         }
+
+        public static void Read(this UyghurName obj, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {  
+                obj.ReadAll(rdReader); 
+            }
+
+        }
         private static void ReadAll(this UyghurName obj, IDataReader rdReader)
         {
             obj.Id = rdReader.GetInt("recid");
-            obj.Name = rdReader.GetString("name");
+            obj.NameUg = rdReader.GetString("name_ug");
+           
+            obj.NameLatin = rdReader.GetString("name_latin");
             obj.RelatedName = rdReader.GetString("related_name");
             obj.Origination = rdReader.GetEnum<OriginationType>("origination");
             obj.Gender = rdReader.GetEnum<GenderType>("gender");
