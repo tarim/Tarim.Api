@@ -1,13 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Tarim.Api.Infrastructure.Interface;
-using Tarim.Api.Infrastructure.Model.names;
+using Tarim.Api.Infrastructure.Model.Name;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Tarim.Api.Controllers
 {
 
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     public class NamesController : Controller
     {
@@ -18,10 +20,10 @@ namespace Tarim.Api.Controllers
             _nameRepository = nameRepository;
         }
         // GET: api/values
-        [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        [HttpGet("{pageNumber:int}")]
+        public async Task<IActionResult> GetAsync(int pageNumber)
         {
-            var uyghurNames = await _nameRepository.GetUyghurName();
+            var uyghurNames = await _nameRepository.GetUyghurName(pageNumber);
             return Ok(uyghurNames.Object);
         }
 
@@ -46,10 +48,10 @@ namespace Tarim.Api.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut]
-        public async Task<IActionResult> PutAsync( [FromBody]UyghurName uyghurName)
+        [HttpPut("name/{nameId:int}")]
+        public async Task<IActionResult> PutAsync([FromBody]UyghurName uyghurName,int nameId)
         {
-            if (ModelState.IsValid && uyghurName.Id>0)
+            if (ModelState.IsValid && uyghurName.Id>0 && uyghurName.Id==nameId)
             {
                 var result = await _nameRepository.UpdateUyghurName(uyghurName);
                 return Ok(result);
@@ -63,6 +65,31 @@ namespace Tarim.Api.Controllers
         {
             var result =await _nameRepository.DeleteUyghurName(id);
             return Ok(result);
+        }
+
+        [HttpPost("action/{nameId:int}")]
+        public async Task<IActionResult> PostNameAction([FromBody]NameAction name,int nameId)
+        {
+            if (ModelState.IsValid && name.NameId==nameId)
+            {
+                var result = await _nameRepository.AddNameAction(name);
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpGet("top10")]
+        public async Task<IActionResult> GetTopNames()
+        {
+            var result = await _nameRepository.GetTopNames();
+            return Ok(result.Object);
+        }
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetNameStatistics()
+        {
+            var result = await _nameRepository.GetNameStatistics();
+            return Ok(result.Object);
         }
     }
 }

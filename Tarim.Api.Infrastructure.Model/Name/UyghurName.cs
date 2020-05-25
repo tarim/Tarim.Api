@@ -5,21 +5,27 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using Tarim.Api.Infrastructure.Common.Enums;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
 
-namespace Tarim.Api.Infrastructure.Model.names
+namespace Tarim.Api.Infrastructure.Model.Name
 {
     public class UyghurName
     {
+
         public int Id { get; set; }
 
         public string NameUg { get; set; }
 
         public string NameLatin { get; set; }
 
-        public OriginationType Origination { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public OriginType Origin { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public GenderType Gender { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public StatusType Status { get; set; }
 
         public string RelatedName { get; set; }

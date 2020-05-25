@@ -4,10 +4,10 @@ using Newtonsoft.Json.Converters;
 
 namespace Tarim.Api.Infrastructure.Common.Enums
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+   // [JsonConverter(typeof(StringEnumConverter))]
     public enum GenderType
     {
-        Male=0,
+        Male = 0,
         Female,
         Unisex
     }
@@ -15,7 +15,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ProfileType
     {
-        Basic=0,
+        Basic = 0,
         Advanced,
         Admin,
         Owner
@@ -24,7 +24,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
     [JsonConverter(typeof(StringEnumConverter))]
     public enum StatusType
     {
-        Registered=0,
+        Registered = 0,
         Active,
         Hold,
         Disabled,
@@ -32,11 +32,19 @@ namespace Tarim.Api.Infrastructure.Common.Enums
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum OriginationType
+    public enum OriginType
     {
         Uyghur = 0,
         Arabic,
         Persian,
         Other
+    }
+
+ //   [JsonConverter(typeof(StringEnumConverter))]
+    public enum NameActionType
+    {
+        LIKE = 0,
+        LOVE,
+        MYNAME
     }
 }

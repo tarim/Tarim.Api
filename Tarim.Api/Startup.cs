@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +15,7 @@ namespace Tarim.Api
 {
     public class Startup
     {
+        readonly string MyAllowOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,10 +26,25 @@ namespace Tarim.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowOrigins,
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod().AllowAnyHeader();
+                });
+            });
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -71,8 +83,8 @@ namespace Tarim.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthentication();
+            app.UseCors();
+         //   app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

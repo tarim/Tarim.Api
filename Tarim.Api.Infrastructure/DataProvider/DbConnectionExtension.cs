@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Tarim.Api.Infrastructure.Common.Enums;
 using Tarim.Api.Infrastructure.Model;
-using Tarim.Api.Infrastructure.Model.names;
+using Tarim.Api.Infrastructure.Model.Name;
 
 namespace Tarim.Api.Infrastructure.DataProvider
 {
@@ -28,6 +28,27 @@ namespace Tarim.Api.Infrastructure.DataProvider
             }
 
         }
+
+        public static void Read(this NameGenderCount obj, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                obj.ReadAll(rdReader);
+            }
+
+        }
+
+        public static void Read(this IList<TopName> objList, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                var obj = new TopName();
+                obj.ReadAll(rdReader);
+                objList.Add(obj);
+            }
+
+        }
+
         private static void ReadAll(this UyghurName obj, IDataReader rdReader)
         {
             obj.Id = rdReader.GetInt("recid");
@@ -35,7 +56,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
            
             obj.NameLatin = rdReader.GetString("name_latin");
             obj.RelatedName = rdReader.GetString("related_name");
-            obj.Origination = rdReader.GetEnum<OriginationType>("origination");
+            obj.Origin = rdReader.GetEnum<OriginType>("origin");
             obj.Gender = rdReader.GetEnum<GenderType>("gender");
             obj.IsFamilyName = rdReader.GetBoolean("is_surname");
             obj.Description = rdReader.GetString("description");
@@ -73,6 +94,29 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.Profile = rdReader.GetEnum<ProfileType>("role");
             obj.Phone = rdReader.GetString("phone");
             obj.Description = rdReader.GetString("description");
+
+        }
+
+        private static void ReadAll(this NameGenderCount obj, IDataReader rdReader)
+        {
+            obj.Male = rdReader.GetInt("MaleCount");
+            obj.Female = rdReader.GetInt("FemaleCount");
+            obj.Unisex = rdReader.GetInt("UnisexCount");
+            obj.Total = rdReader.GetInt("Total");
+            obj.Like = rdReader.GetInt("likeCount");
+            obj.Love = rdReader.GetInt("LoveCount");
+            obj.MyName = rdReader.GetInt("MyNameCount");
+
+        }
+
+        private static void ReadAll(this TopName obj, IDataReader rdReader)
+        {
+            obj.Id = rdReader.GetInt("recid");
+            obj.NameUg = rdReader.GetString("name");
+            obj.NameLatin = rdReader.GetString("nameLatin");
+            obj.LikeCount = rdReader.GetInt("likeCount");
+            obj.LoveCount = rdReader.GetInt("LoveCount");
+            obj.MyNameCount = rdReader.GetInt("MyNameCount");
 
         }
     }
