@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Tarim.Api.Infrastructure.Common.Enums
 {
-   // [JsonConverter(typeof(StringEnumConverter))]
+    // [JsonConverter(typeof(StringEnumConverter))]
     public enum GenderType
     {
         Male = 0,
@@ -21,7 +21,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Owner
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    // [JsonConverter(typeof(StringEnumConverter))]
     public enum StatusType
     {
         Registered = 0,
@@ -31,7 +31,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Deleted
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    //[JsonConverter(typeof(StringEnumConverter))]
     public enum OriginType
     {
         Uyghur = 0,
@@ -40,11 +40,26 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         Other
     }
 
- //   [JsonConverter(typeof(StringEnumConverter))]
+    //   [JsonConverter(typeof(StringEnumConverter))]
     public enum NameActionType
     {
         LIKE = 0,
         LOVE,
         MYNAME
     }
+
+    public enum TipsType
+    {
+        General,
+        DevOps,
+        Go,
+        CSharp,
+        Api,
+        React,
+        CSS,
+        Oracle,
+        MySql,
+        RFM
+    }
+
 }

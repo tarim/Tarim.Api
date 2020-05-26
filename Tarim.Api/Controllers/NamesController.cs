@@ -27,7 +27,7 @@ namespace Tarim.Api.Controllers
             return Ok(uyghurNames.Object);
         }
 
-        // GET api/values/5
+        
         [HttpGet("{name}")]
         public async Task<IActionResult> GetAsync(string name)
         {
