@@ -38,6 +38,7 @@ namespace Tarim.Api
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
             services.AddSingleton<ITipsRepository, TipsRepository>();
+            services.AddSingleton<IProverbRepository, ProverbRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             

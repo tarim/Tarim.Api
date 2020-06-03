@@ -5,6 +5,7 @@ using Tarim.Api.Infrastructure.Common.Enums;
 using Tarim.Api.Infrastructure.Model;
 using Tarim.Api.Infrastructure.Model.Name;
 using Tarim.Api.Infrastructure.Model.Tips;
+using Tarim.Api.Infrastructure.Model.Proverbs;
 
 namespace Tarim.Api.Infrastructure.DataProvider
 {
@@ -62,6 +63,26 @@ namespace Tarim.Api.Infrastructure.DataProvider
         }
 
         public static void Read(this Tip obj, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {  
+                obj.ReadAll(rdReader); 
+            }
+
+        }
+
+        public static void Read(this IList<Proverb> objList, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                var obj = new Proverb();
+                obj.ReadAll(rdReader);
+                objList.Add(obj);
+            }
+
+        }
+
+        public static void Read(this Proverb obj, IDataReader rdReader)
         {
             while (rdReader.Read())
             {  
@@ -151,6 +172,18 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.Content = rdReader.GetString("content");
             obj.Category = rdReader.GetEnum<TipsType>("category");
             obj.Source = rdReader.GetString("source");
+            obj.UserName = rdReader.GetString("first_name");
+            
+        }
+
+        ///
+        // Read Uyghur Proverb
+        ///
+        private static void ReadAll(this Proverb obj, IDataReader rdReader)
+        {
+            obj.Id = rdReader.GetInt("recid");
+            obj.Content = rdReader.GetString("content");
+            obj.Description = rdReader.GetString("description");
             obj.UserName = rdReader.GetString("first_name");
             
         }
