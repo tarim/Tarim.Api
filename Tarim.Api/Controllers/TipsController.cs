@@ -27,6 +27,13 @@ namespace Tarim.Api.Controllers
             return Ok(result.Object);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _tipsRepository.GetTips();
+            return Ok(result.Object);
+        }
+
         
         [HttpGet("tip/{id:int}")]
         public async Task<IActionResult> GetTip(int id)

@@ -25,6 +25,20 @@ namespace Tarim.Api.Infrastructure.Service
             logger = log;
         }
 
+        public async Task<Result<IList<Tip>>> GetTips()
+        {
+            var result = new Result<IList<Tip>> { Object = new List<Tip>() };
+            await GetResultAsync("GET_ALL_TIPS",
+               
+                rdReader =>
+                {
+                    result.Object.Read(rdReader);
+                    return result;
+                });
+            return result;
+            
+        }
+
         public async Task<Result<IList<Tip>>> GetTips(int pageNumber)
         {
             var result = new Result<IList<Tip>> { Object = new List<Tip>() };

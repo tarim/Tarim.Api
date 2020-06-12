@@ -170,6 +170,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
            
             obj.Summary = rdReader.GetString("summary");
             obj.Content = rdReader.GetString("content");
+            obj.Private = rdReader.GetBoolean("private");
             obj.Category = rdReader.GetEnum<TipsType>("category");
             obj.Source = rdReader.GetString("source");
             obj.UserName = rdReader.GetString("first_name");

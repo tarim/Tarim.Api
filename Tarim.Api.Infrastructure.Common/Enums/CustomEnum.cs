@@ -50,7 +50,7 @@ namespace Tarim.Api.Infrastructure.Common.Enums
 
     public enum TipsType
     {
-        General,
+        General=0,
         DevOps,
         Go,
         CSharp,

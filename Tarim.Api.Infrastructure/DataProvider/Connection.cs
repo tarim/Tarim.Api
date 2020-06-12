@@ -166,11 +166,18 @@ namespace Tarim.Api.Infrastructure.DataProvider
         private async Task<int> ExecuteNonQueryAsync(IDbCommand command)
         {
             var res = -1;
-            await OpenAsync(conn =>
+            try
             {
-                command.Connection = conn;
-                res = command.ExecuteNonQuery();
-            });
+                await OpenAsync(conn =>
+                {
+                    command.Connection = conn;
+                    res = command.ExecuteNonQuery();
+                });
+            }
+            catch (Exception e)
+            {
+                throw (e);
+            }
             return res;
         }
         private static async Task<T> DoWithCommandAsync<T>(string query, Func<IDbCommand, Task<T>> actionAsync, params IDbDataParameter[] parameters)

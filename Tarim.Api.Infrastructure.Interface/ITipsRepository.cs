@@ -15,6 +15,8 @@ namespace Tarim.Api.Infrastructure.Interface
     {
         Task<Result<IList<Tip>>> GetTips(int pageNumber);
 
+        Task<Result<IList<Tip>>> GetTips();
+
         Task<Result<Tip>> GetTip(int tipId);
 
         Task<Result<Tip>> AddTip(Tip tip);
