@@ -184,6 +184,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
         {
             obj.Id = rdReader.GetInt("recid");
             obj.Content = rdReader.GetString("content");
+            obj.Category = rdReader.GetEnum<ProverbType>("category");
             obj.Description = rdReader.GetString("description");
             obj.UserName = rdReader.GetString("first_name");
             

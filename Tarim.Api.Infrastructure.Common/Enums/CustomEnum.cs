@@ -62,4 +62,12 @@ namespace Tarim.Api.Infrastructure.Common.Enums
         RFM
     }
 
+    public enum ProverbType
+    {
+        Proverb=0,
+        Idiom,
+        Wisdom,
+        Other
+    }
+
 }

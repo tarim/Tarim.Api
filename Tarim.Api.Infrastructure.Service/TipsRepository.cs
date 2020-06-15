@@ -85,7 +85,7 @@ namespace Tarim.Api.Infrastructure.Service
             result.Status = ExecuteStatus.Success;
             return result;
         }
-
+         
       public async Task<Result<Tip>> AddTip(Tip tip)
         {
             var result = new Result<Tip> { Object = tip };

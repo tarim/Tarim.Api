@@ -88,6 +88,7 @@ namespace Tarim.Api.Infrastructure.Service
             var insertId = GetParameter("id_out",MySqlDbType.Int32,10);
             await ExecuteNonQueryAsync("ADD_PROVERB",
                 GetParameter("content_in",proverb.Content,MySqlDbType.VarChar),
+                GetParameter("category_in",proverb.Category,MySqlDbType.Enum),
                 GetParameter("description_in", proverb.Description, MySqlDbType.VarChar),
                 GetParameter("user_recid_in", proverb.UserRecid, MySqlDbType.Int32),
                 insertId

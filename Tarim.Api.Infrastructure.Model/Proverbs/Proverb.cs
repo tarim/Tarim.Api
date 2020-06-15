@@ -17,6 +17,9 @@ namespace Tarim.Api.Infrastructure.Model.Proverbs
 
         public string Content { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ProverbType Category { get; set; }
+
         public string Description { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
