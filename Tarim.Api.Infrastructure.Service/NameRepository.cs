@@ -28,6 +28,7 @@ namespace Tarim.Api.Infrastructure.Service
         public async Task<Result<IList<UyghurName>>> GetUyghurName(int pageNumber)
         {
             var uyghurNames = new Result<IList<UyghurName>> { Object = new List<UyghurName>() };
+            var totalCount = GetParameter("TotalCount", MySqlDbType.Int32, 10);
             await GetResultAsync("GET_NAME_LIST",
                
                 rdReader =>
@@ -36,6 +37,7 @@ namespace Tarim.Api.Infrastructure.Service
                     return uyghurNames;
                 },
                  GetParameter("pageNumber_in", pageNumber, MySqlDbType.Int32));
+            uyghurNames.TotalCount = Convert.ToInt32(totalCount.Value);
             return uyghurNames;
             
         }

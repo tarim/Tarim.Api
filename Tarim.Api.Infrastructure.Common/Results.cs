@@ -28,6 +28,7 @@ namespace Tarim.Api.Infrastructure.Common
     {
         public T Object { get; set; }
         public string Message { get; set; }
+        public  int TotalCount { get; set; }
         public IList<string> Messages { get; set; }
         public int Value { get; set; }
         public ExecuteStatus Status { get; set; } = ExecuteStatus.Failed;

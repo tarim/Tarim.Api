@@ -3,13 +3,14 @@ using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Model.Name;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Tarim.Api.Controllers
 {
 
-    [EnableCors("_myAllowSpecificOrigins")]
+   // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     public class NamesController : Controller
     {
@@ -78,6 +79,7 @@ namespace Tarim.Api.Controllers
             return BadRequest(ModelState);
         }
 
+        [Authorize]
         [HttpGet("top10")]
         public async Task<IActionResult> GetTopNames()
         {

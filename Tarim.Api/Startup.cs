@@ -7,9 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Google;
 using Tarim.Api.Infrastructure.DataProvider;
 using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Service;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Tarim.Api
 {
@@ -34,13 +37,15 @@ namespace Tarim.Api
                     builder.WithOrigins("http://localhost:3000")
                     .AllowAnyMethod().AllowAnyHeader();
                 });
-            });
+            })
+            .AddControllers();
+          //  services.AddSigningCredential();
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
             services.AddSingleton<ITipsRepository, TipsRepository>();
             services.AddSingleton<IProverbRepository, ProverbRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddSingleton<IProductsRepository, ProductsRepository>();
             
             services.AddMvc().AddJsonOptions(options =>
             {
@@ -64,12 +69,21 @@ namespace Tarim.Api
                 });
             });
 
-            services.AddAuthentication().AddGoogle(
-                options => {
-                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
+            services.AddAuthentication(x=> {
+                x.DefaultAuthenticateScheme =CookieAuthenticationDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+                .AddGoogle(
 
+                options => {
+                    
+                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
+                  //  options.UsePkce = true;
+                  
                     options.ClientId = googleAuth["ClientId"];
                     options.ClientSecret = googleAuth["ClientSecret"];
+
                 });
         }
 
@@ -85,8 +99,14 @@ namespace Tarim.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors();
-         //   app.UseAuthentication();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarim API V1");
+                c.RoutePrefix = string.Empty;
+            });
+          //  app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -94,12 +114,7 @@ namespace Tarim.Api
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarim API V1");
-                c.RoutePrefix = string.Empty;
-            });
+            
         }
     }
 }

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Name\" />
+    <Folder Include="Products\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tarim.Api.Infrastructure.Common\Tarim.Api.Infrastructure.Common.csproj" />
