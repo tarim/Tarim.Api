@@ -6,6 +6,7 @@ using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Model;
 using Microsoft.Extensions.Logging;
 
+
 namespace Tarim.Api.Infrastructure.Service
 {
     public class UserRepository : BaseRepository, IUserRepository
@@ -23,10 +24,14 @@ namespace Tarim.Api.Infrastructure.Service
                 rdReader =>
                 {
                     user.Object.Read(rdReader);
+                    if (user.Object.Id > 0) user.Status = Common.Enums.ExecuteStatus.Success;
                     return user;
                 },
                 GetParameter("email_in", userEmail, MySql.Data.MySqlClient.MySqlDbType.VarChar));
+            
             return user;
         }
+
+       
     }
 }

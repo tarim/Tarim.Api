@@ -12,9 +12,10 @@ using Tarim.Api.Infrastructure.Model.Products;
 
 namespace Tarim.Api.Controllers
 {
-    [EnableCors("_myAllowSpecificOrigins")]
+   // [EnableCors("_myAllowSpecificOrigins")]
+   
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductsRepository _productsRepository;
 
@@ -30,7 +31,8 @@ namespace Tarim.Api.Controllers
             return Ok(result.Object);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProducts()
         {
             var result = await _productsRepository.GetAllProducts();
@@ -46,7 +48,7 @@ namespace Tarim.Api.Controllers
         }
 
         // POST api/values
-       // [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] Product product)
         {
@@ -60,6 +62,7 @@ namespace Tarim.Api.Controllers
         }
 
         // PUT api/values/5
+        [Authorize]
         [HttpPut("product/{id:int}")]
         public async Task<IActionResult> PutAsync([FromBody] Product product, int id)
         {
@@ -72,6 +75,7 @@ namespace Tarim.Api.Controllers
         }
 
         // DELETE api/values/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

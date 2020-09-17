@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Cors;
 namespace Tarim.Api.Controllers
 {
 
-    [EnableCors("_myAllowSpecificOrigins")]
+   // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
-    public class ProverbsController : Controller
+    public class ProverbsController : ControllerBase
     {
         private readonly IProverbRepository _proverbRepository;
 

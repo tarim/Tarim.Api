@@ -7,12 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.Google;
 using Tarim.Api.Infrastructure.DataProvider;
 using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Service;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Tarim.Api.Infrastructure.Common.ActionFilters;
 
 namespace Tarim.Api
 {
@@ -22,8 +24,9 @@ namespace Tarim.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            StaticConfig = configuration;
         }
-
+        public static IConfiguration StaticConfig { get; private set; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,6 +42,9 @@ namespace Tarim.Api
                 });
             })
             .AddControllers();
+            ConfigureSwagger(services);
+            services.AddHealthChecks();
+       //     services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true);
           //  services.AddSigningCredential();
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
@@ -47,44 +53,15 @@ namespace Tarim.Api
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<IProductsRepository, ProductsRepository>();
             
-            services.AddMvc().AddJsonOptions(options =>
+
+            ConfigureAuthenticationSettings(services);
+            services.AddMvc(options=>options.RespectBrowserAcceptHeader=true).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.IgnoreNullValues = true;
+                
             });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Tarim API",
-                    Description = "Tarim Lab API",
-                    TermsOfService = new Uri("https://koznek.com/terms"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Nur Karluk",
-                        Email = "nur@koznek.com",
-                        Url = new Uri("https://github.com/tarim"),
-                    }
-                });
-            });
-
-            services.AddAuthentication(x=> {
-                x.DefaultAuthenticateScheme =CookieAuthenticationDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddGoogle(
-
-                options => {
-                    
-                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
-                  //  options.UsePkce = true;
-                  
-                    options.ClientId = googleAuth["ClientId"];
-                    options.ClientSecret = googleAuth["ClientSecret"];
-
-                });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,25 +73,122 @@ namespace Tarim.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarim API V1");
                 c.RoutePrefix = string.Empty;
             });
-          //  app.UseCors();
+
+            app.UseRouting();
+            
+            app.UseCors(it => it.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/healthcheck");
                 endpoints.MapControllers();
             });
 
             
+        }
+
+      //  private static void CreateIdentityIfNotCreated(IServiceCollection services)
+      //  {
+       //     var sp = services.BuildServiceProvider();
+       //     using var scope = sp.CreateScope();
+        //    var existingUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+        //    if (existingUserManager == null)
+        //    {
+        //        services.AddIdentity<AppUser, IdentityRole>()
+        //                .AddEntityFrameworkStores<AppDbContext>()
+        //                .AddDefaultTokenProviders();
+        //    }
+       // }
+        private void ConfigureAuthenticationSettings(IServiceCollection services)
+        {
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Auth:Jwt:Secret"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            })
+              .AddGoogle(
+
+                options => {
+
+                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
+                    //  options.UsePkce = true;
+
+                    options.ClientId = googleAuth["ClientId"];
+                    options.ClientSecret = googleAuth["ClientSecret"];
+
+                });
+        }
+
+        private static void ConfigureSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "TARIM API",
+                    Description = "Tarim Web API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Nur Karluk",
+                        Email = "nur@karluks.com",
+                        Url = new Uri("https://www.karluks.com/nur"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under MIT",
+                    }
+                });
+                c.SchemaFilter<SwaggerExcludeFilter>();
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"JWT Authorization header using the Bearer scheme. 
+                                    Enter 'Bearer' [space] and then your token in the text input below. 
+                                    Example: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                      }
+                    });
+            });
         }
     }
 }

@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Tarim.Api.Controllers
 {
-
-   // [EnableCors("_myAllowSpecificOrigins")]
+    [ApiController]
+     [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
-    public class NamesController : Controller
+    public class NamesController : ControllerBase
     {
         private readonly INameRepository _nameRepository;
 
@@ -79,7 +79,7 @@ namespace Tarim.Api.Controllers
             return BadRequest(ModelState);
         }
 
-        [Authorize]
+      //  [Authorize]
         [HttpGet("top10")]
         public async Task<IActionResult> GetTopNames()
         {

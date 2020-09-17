@@ -52,6 +52,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
         {
             return (T)Enum.Parse(typeof(T), reader.GetString(columnName), true);
         }
+
         public static long GetLong(this IDataReader reader, string columnName)
         {
             return GetValueOrDefault(reader, columnName, reader.GetInt64, 0);

@@ -22,5 +22,8 @@ namespace Tarim.Api.Infrastructure.Model
         public ProfileType Profile { get; set; }
         public string[] Roles { get; set; }
         public string Description { get; set; }
+
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
 }
