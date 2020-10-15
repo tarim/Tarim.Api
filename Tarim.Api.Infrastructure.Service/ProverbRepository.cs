@@ -20,7 +20,7 @@ namespace Tarim.Api.Infrastructure.Service
     public class ProverbRepository : BaseRepository, IProverbRepository
     {
         private readonly ILogger<ProverbRepository> logger;
-        public ProverbRepository(IConnection connection,ILogger<ProverbRepository> log) : base(connection)
+        public ProverbRepository(IConnection connection, ILogger<ProverbRepository> log) : base(connection)
         {
             logger = log;
         }
@@ -29,7 +29,7 @@ namespace Tarim.Api.Infrastructure.Service
         {
             var result = new Result<IList<Proverb>> { Object = new List<Proverb>() };
             await GetResultAsync("GET_PROVERBS_LIST",
-               
+
                 rdReader =>
                 {
                     result.Object.Read(rdReader);
@@ -37,14 +37,14 @@ namespace Tarim.Api.Infrastructure.Service
                 },
                  GetParameter("pageNumber_in", pageNumber, MySqlDbType.Int32));
             return result;
-            
+
         }
 
-         public async Task<Result<IList<Proverb>>> GetDailyProverb(int pageSize)
+        public async Task<Result<IList<Proverb>>> GetDailyProverb(int pageSize)
         {
             var result = new Result<IList<Proverb>> { Object = new List<Proverb>() };
             await GetResultAsync("GET_DAILY_PROVERB",
-               
+
                 rdReader =>
                 {
                     result.Object.Read(rdReader);
@@ -52,22 +52,22 @@ namespace Tarim.Api.Infrastructure.Service
                 },
                  GetParameter("size_in", pageSize, MySqlDbType.Int32));
             return result;
-            
+
         }
 
         public async Task<Result<Proverb>> GetProverb(int proverbId)
         {
-            
-                var result = new Result<Proverb> { Object = new Proverb() };
-                await GetResultAsync("GET_PROVERB",
-                    rdReader =>
-                    {
-                        result.Object.Read(rdReader);
-                        return result;
-                    },
-                    GetParameter("proverb_recid_in", proverbId, MySqlDbType.Int32));
-                return result;
-           
+
+            var result = new Result<Proverb> { Object = new Proverb() };
+            await GetResultAsync("GET_PROVERB",
+                rdReader =>
+                {
+                    result.Object.Read(rdReader);
+                    return result;
+                },
+                GetParameter("proverb_recid_in", proverbId, MySqlDbType.Int32));
+            return result;
+
         }
 
         public async Task<Result<Proverb>> UpdateProverb(Proverb proverb)
@@ -82,19 +82,19 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-      public async Task<Result<Proverb>> AddProverb(Proverb proverb)
+        public async Task<Result<Proverb>> AddProverb(Proverb proverb)
         {
             var result = new Result<Proverb> { Object = proverb };
-            var insertId = GetParameter("id_out",MySqlDbType.Int32,10);
+            var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
             await ExecuteNonQueryAsync("ADD_PROVERB",
-                GetParameter("content_in",proverb.Content,MySqlDbType.VarChar),
-                GetParameter("category_in",proverb.Category,MySqlDbType.Enum),
+                GetParameter("content_in", proverb.Content, MySqlDbType.VarChar),
+                GetParameter("category_in", proverb.Category, MySqlDbType.Enum),
                 GetParameter("description_in", proverb.Description, MySqlDbType.VarChar),
                 GetParameter("user_recid_in", proverb.UserRecid, MySqlDbType.Int32),
                 insertId
             );
-            result.Object.Id =Convert.ToInt32(insertId.Value);
-            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed; 
+            result.Object.Id = Convert.ToInt32(insertId.Value);
+            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed;
             return result;
         }
 
@@ -108,6 +108,6 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-     
+
     }
 }

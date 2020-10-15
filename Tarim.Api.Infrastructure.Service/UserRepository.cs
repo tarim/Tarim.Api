@@ -20,7 +20,7 @@ namespace Tarim.Api.Infrastructure.Service
         public async Task<Result<User>> FindUser(string userEmail)
         {
             var user = new Result<User> { Object = new User() };
-            await GetResultAsync("GET_USER",            
+            await GetResultAsync("GET_USER",
                 rdReader =>
                 {
                     user.Object.Read(rdReader);
@@ -28,10 +28,10 @@ namespace Tarim.Api.Infrastructure.Service
                     return user;
                 },
                 GetParameter("email_in", userEmail, MySql.Data.MySqlClient.MySqlDbType.VarChar));
-            
+
             return user;
         }
 
-       
+
     }
 }

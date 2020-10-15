@@ -37,15 +37,23 @@ namespace Tarim.Api.Infrastructure.Interface
     {
         Task<Result<IList<Product>>> GetAllProducts();
 
-        Task<Result<IList<Product>>> GetProducts(int pageNumber);
+       // Task<Result<IList<Product>>> GetProducts(int pageNumber);
 
-        Task<Result<Product>> GetProduct(int id);
+      //  Task<Result<Product>> GetProduct(int id);
 
         Task<Result<Product>> AddProduct(Product product,int userRecid);
 
         Task<Result<Product>> UpdateProduct(Product product);
 
         Task<Result<int>> DeleteProduct(int id);
+
+        Task<Result<IList<Product>>> GetTodaySpecials();
+
+        Task<Result<Product>> AddTodaySpecial(Product product, int userRecid);
+
+        Task<Result<Product>> UpdateTodaySpecial(Product product);
+
+        Task<Result<int>> DeleteTodaySpecial(int id);
 
     }
 }

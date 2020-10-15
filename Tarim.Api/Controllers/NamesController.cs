@@ -3,14 +3,13 @@ using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Model.Name;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Tarim.Api.Controllers
 {
     [ApiController]
-     [EnableCors("_myAllowSpecificOrigins")]
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     public class NamesController : ControllerBase
     {
@@ -28,7 +27,7 @@ namespace Tarim.Api.Controllers
             return Ok(uyghurNames.Object);
         }
 
-        
+
         [HttpGet("{name}")]
         public async Task<IActionResult> GetAsync(string name)
         {
@@ -38,7 +37,7 @@ namespace Tarim.Api.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody]UyghurName uyghurName)
+        public async Task<IActionResult> PostAsync([FromBody] UyghurName uyghurName)
         {
             if (ModelState.IsValid)
             {
@@ -50,9 +49,9 @@ namespace Tarim.Api.Controllers
 
         // PUT api/values/5
         [HttpPut("name/{nameId:int}")]
-        public async Task<IActionResult> PutAsync([FromBody]UyghurName uyghurName,int nameId)
+        public async Task<IActionResult> PutAsync([FromBody] UyghurName uyghurName, int nameId)
         {
-            if (ModelState.IsValid && uyghurName.Id>0 && uyghurName.Id==nameId)
+            if (ModelState.IsValid && uyghurName.Id > 0 && uyghurName.Id == nameId)
             {
                 var result = await _nameRepository.UpdateUyghurName(uyghurName);
                 return Ok(result);
@@ -64,14 +63,14 @@ namespace Tarim.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result =await _nameRepository.DeleteUyghurName(id);
+            var result = await _nameRepository.DeleteUyghurName(id);
             return Ok(result);
         }
 
         [HttpPost("action/{nameId:int}")]
-        public async Task<IActionResult> PostNameAction([FromBody]NameAction name,int nameId)
+        public async Task<IActionResult> PostNameAction([FromBody] NameAction name, int nameId)
         {
-            if (ModelState.IsValid && name.NameId==nameId)
+            if (ModelState.IsValid && name.NameId == nameId)
             {
                 var result = await _nameRepository.AddNameAction(name);
                 return Ok(result);
@@ -79,7 +78,7 @@ namespace Tarim.Api.Controllers
             return BadRequest(ModelState);
         }
 
-      //  [Authorize]
+        //  [Authorize]
         [HttpGet("top10")]
         public async Task<IActionResult> GetTopNames()
         {

@@ -25,50 +25,35 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-using System;
-using System.Collections.Generic;
-using System.Data;
-using Tarim.Api.Infrastructure.Model.Products;
 
-namespace Tarim.Api.Infrastructure.DataProvider
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace Tarim.Api.Infrastructure.Common.Attributes
 {
-    public static partial class DbConnectionExtension
+    
+    public class TarimAuthorizeUserAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
-        public static void Read(this IList<Product> objList, IDataReader rdReader)
+        public new string[] Roles { get; set; }
+
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            while (rdReader.Read())
+            if (Roles.Length == 0)
             {
-                var obj = new Product();
-                obj.ReadAll(rdReader);
-                objList.Add(obj);
+                context.Result = new UnauthorizedResult();
+                return;
             }
 
-        }
-
-        public static void Read(this Product obj, IDataReader rdReader)
-        {
-            while (rdReader.Read())
+            if (context.HttpContext.User.Identity.IsAuthenticated && this.Roles.Any(context.HttpContext.User.IsInRole))
             {
-                obj.ReadAll(rdReader);
+                return;
             }
 
+            context.Result = new UnauthorizedResult();
+            return;
         }
-
-
-
-        private static void ReadAll(this Product obj, IDataReader rdReader)
-        {
-            obj.Id = rdReader.GetInt("recid");
-            obj.ProductName = rdReader.GetString("name");
-
-            obj.Price = rdReader.GetString("price");
-            obj.ProductType = rdReader.GetString("product_type");
-            obj.MediaFile = rdReader.GetString("media_file");
-            obj.Sku = rdReader.GetString("sku");
-            obj.CreatedDate = rdReader.GetNullableDateTime("rec_create_datetime").Value;
-            obj.Description = rdReader.GetString("description");
-
-        }
-
+       
     }
 }

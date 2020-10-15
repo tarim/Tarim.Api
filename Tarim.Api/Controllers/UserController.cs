@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tarim.Api.Infrastructure.Common;
+using Microsoft.IdentityModel.Tokens;
 using Tarim.Api.Infrastructure.Interface;
 using Tarim.Api.Infrastructure.Model;
 using Tarim.Api.Infrastructure.Model.Auth;
@@ -34,13 +37,13 @@ namespace Tarim.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Ok(await AuthenticateGoogleUser(request));
+                return await AuthenticateGoogleUser(request);
             }
 
             return BadRequest(ModelState.Values.SelectMany(it => it.Errors).Select(it => it.ErrorMessage));
         }
 
-        private async Task<User> AuthenticateGoogleUser(GoogleUserRequest request)
+        private async Task<IActionResult> AuthenticateGoogleUser(GoogleUserRequest request)
         {
             Payload payload = await ValidateAsync(request.IdToken, new ValidationSettings
             {
@@ -53,11 +56,50 @@ namespace Tarim.Api.Controllers
                 var user = await _userRepository.FindUser(payload.Email);
                 if (user.Status == Infrastructure.Common.Enums.ExecuteStatus.Success)
                 {
-                    user.Object.Token = request.AccessToken;
-                    return user.Object;
+                    user.Object.Token = GenerateUserToken(user.Object);// request.AccessToken;
+                    return Ok(user.Object);
                 }
             }
-            return null;
+            return Unauthorized();
         }
+
+        #region Private Methods
+        private string GenerateUserToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var key = Encoding.ASCII.GetBytes(Startup.StaticConfig["Auth:Google:ClientSecret"]);
+
+            var expires = DateTime.UtcNow.AddDays(7);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, user.Email) ,
+                    new Claim(JwtRegisteredClaimNames.Sub, Startup.StaticConfig["Auth:Jwt:Subject"]),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                    new Claim(ClaimTypes.Name, user.Email),
+                    new Claim(ClaimTypes.Surname, user.FirstName),
+                    new Claim(ClaimTypes.GivenName, user.LastName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Email),
+                    new Claim(ClaimTypes.Role,user.Profile.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email)
+                }),
+
+                Expires = expires,
+
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = Startup.StaticConfig["Auth:Jwt:Issuer"],
+                Audience = Startup.StaticConfig["Auth:Jwt:Audience"]
+            };
+
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+
+            var token = tokenHandler.WriteToken(securityToken);
+
+            return token;
+        }
+        #endregion
     }
 }

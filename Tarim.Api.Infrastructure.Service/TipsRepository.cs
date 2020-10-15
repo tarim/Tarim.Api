@@ -20,7 +20,7 @@ namespace Tarim.Api.Infrastructure.Service
     public class TipsRepository : BaseRepository, ITipsRepository
     {
         private readonly ILogger<TipsRepository> logger;
-        public TipsRepository(IConnection connection,ILogger<TipsRepository> log) : base(connection)
+        public TipsRepository(IConnection connection, ILogger<TipsRepository> log) : base(connection)
         {
             logger = log;
         }
@@ -29,21 +29,21 @@ namespace Tarim.Api.Infrastructure.Service
         {
             var result = new Result<IList<Tip>> { Object = new List<Tip>() };
             await GetResultAsync("GET_ALL_TIPS",
-               
+
                 rdReader =>
                 {
                     result.Object.Read(rdReader);
                     return result;
                 });
             return result;
-            
+
         }
 
         public async Task<Result<IList<Tip>>> GetTips(int pageNumber)
         {
             var result = new Result<IList<Tip>> { Object = new List<Tip>() };
             await GetResultAsync("GET_TIPS_LIST",
-               
+
                 rdReader =>
                 {
                     result.Object.Read(rdReader);
@@ -51,22 +51,22 @@ namespace Tarim.Api.Infrastructure.Service
                 },
                  GetParameter("pageNumber_in", pageNumber, MySqlDbType.Int32));
             return result;
-            
+
         }
 
         public async Task<Result<Tip>> GetTip(int tipId)
         {
-            
-                var result = new Result<Tip> { Object = new Tip() };
-                await GetResultAsync("GET_TIP",
-                    rdReader =>
-                    {
-                        result.Object.Read(rdReader);
-                        return result;
-                    },
-                    GetParameter("tip_recid_in", tipId, MySqlDbType.Int32));
-                return result;
-           
+
+            var result = new Result<Tip> { Object = new Tip() };
+            await GetResultAsync("GET_TIP",
+                rdReader =>
+                {
+                    result.Object.Read(rdReader);
+                    return result;
+                },
+                GetParameter("tip_recid_in", tipId, MySqlDbType.Int32));
+            return result;
+
         }
 
         public async Task<Result<Tip>> UpdateTip(Tip tip)
@@ -85,13 +85,13 @@ namespace Tarim.Api.Infrastructure.Service
             result.Status = ExecuteStatus.Success;
             return result;
         }
-         
-      public async Task<Result<Tip>> AddTip(Tip tip)
+
+        public async Task<Result<Tip>> AddTip(Tip tip)
         {
             var result = new Result<Tip> { Object = tip };
-            var insertId = GetParameter("id_out",MySqlDbType.Int32,10);
+            var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
             await ExecuteNonQueryAsync("ADD_TIP",
-                GetParameter("title_in",tip.Title,MySqlDbType.VarChar),
+                GetParameter("title_in", tip.Title, MySqlDbType.VarChar),
                 GetParameter("summary_in", tip.Summary, MySqlDbType.VarChar),
                 GetParameter("category_in", tip.Category, MySqlDbType.Enum),
                 GetParameter("content_in", tip.Content, MySqlDbType.Text),
@@ -99,8 +99,8 @@ namespace Tarim.Api.Infrastructure.Service
                 GetParameter("user_recid_in", tip.UserRecid, MySqlDbType.Int32),
                 insertId
             );
-            result.Object.Id =Convert.ToInt32(insertId.Value);
-            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed; 
+            result.Object.Id = Convert.ToInt32(insertId.Value);
+            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed;
             return result;
         }
 
@@ -114,6 +114,6 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-     
+
     }
 }

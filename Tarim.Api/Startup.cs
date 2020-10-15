@@ -44,28 +44,28 @@ namespace Tarim.Api
             .AddControllers();
             ConfigureSwagger(services);
             services.AddHealthChecks();
-       //     services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true);
-          //  services.AddSigningCredential();
+            //     services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true);
+            //  services.AddSigningCredential();
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
             services.AddSingleton<INameRepository, NameRepository>();
             services.AddSingleton<ITipsRepository, TipsRepository>();
             services.AddSingleton<IProverbRepository, ProverbRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<IProductsRepository, ProductsRepository>();
-            
+
 
             ConfigureAuthenticationSettings(services);
-            services.AddMvc(options=>options.RespectBrowserAcceptHeader=true).AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                options.JsonSerializerOptions.IgnoreNullValues = true;
-                
-            });
-            
+            services.AddMvc(options => options.RespectBrowserAcceptHeader = true).AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -81,7 +81,7 @@ namespace Tarim.Api
             });
 
             app.UseRouting();
-            
+
             app.UseCors(it => it.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseAuthentication();
@@ -93,13 +93,13 @@ namespace Tarim.Api
                 endpoints.MapControllers();
             });
 
-            
+
         }
 
-      //  private static void CreateIdentityIfNotCreated(IServiceCollection services)
-      //  {
-       //     var sp = services.BuildServiceProvider();
-       //     using var scope = sp.CreateScope();
+        //  private static void CreateIdentityIfNotCreated(IServiceCollection services)
+        //  {
+        //     var sp = services.BuildServiceProvider();
+        //     using var scope = sp.CreateScope();
         //    var existingUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
         //    if (existingUserManager == null)
         //    {
@@ -107,35 +107,31 @@ namespace Tarim.Api
         //                .AddEntityFrameworkStores<AppDbContext>()
         //                .AddDefaultTokenProviders();
         //    }
-       // }
+        // }
         private void ConfigureAuthenticationSettings(IServiceCollection services)
         {
+            IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = false;
+                x.RequireHttpsMetadata = true;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Auth:Jwt:Secret"])),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(googleAuth["ClientSecret"])),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
             })
               .AddGoogle(
-
-                options => {
-
-                    IConfigurationSection googleAuth = Configuration.GetSection("Auth:Google");
-                    //  options.UsePkce = true;
-
+                options =>
+                {
                     options.ClientId = googleAuth["ClientId"];
                     options.ClientSecret = googleAuth["ClientSecret"];
-
                 });
         }
 

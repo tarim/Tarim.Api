@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Cors;
 namespace Tarim.Api.Controllers
 {
 
-   // [EnableCors("_myAllowSpecificOrigins")]
+    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     public class TipsController : ControllerBase
     {
@@ -34,7 +34,7 @@ namespace Tarim.Api.Controllers
             return Ok(result.Object);
         }
 
-        
+
         [HttpGet("tip/{id:int}")]
         public async Task<IActionResult> GetTip(int id)
         {
@@ -44,7 +44,7 @@ namespace Tarim.Api.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody]Tip tip)
+        public async Task<IActionResult> PostAsync([FromBody] Tip tip)
         {
             if (ModelState.IsValid)
             {
@@ -56,9 +56,9 @@ namespace Tarim.Api.Controllers
 
         // PUT api/values/5
         [HttpPut("tip/{id:int}")]
-        public async Task<IActionResult> PutAsync([FromBody]Tip tip,int id)
+        public async Task<IActionResult> PutAsync([FromBody] Tip tip, int id)
         {
-            if (ModelState.IsValid && tip.Id>0 && tip.Id==id)
+            if (ModelState.IsValid && tip.Id > 0 && tip.Id == id)
             {
                 var result = await _tipsRepository.UpdateTip(tip);
                 return Ok(result);
@@ -70,7 +70,7 @@ namespace Tarim.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result =await _tipsRepository.DeleteTip(id);
+            var result = await _tipsRepository.DeleteTip(id);
             return Ok(result);
         }
 

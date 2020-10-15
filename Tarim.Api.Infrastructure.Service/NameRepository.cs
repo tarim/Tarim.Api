@@ -20,7 +20,7 @@ namespace Tarim.Api.Infrastructure.Service
     public class NameRepository : BaseRepository, INameRepository
     {
         private readonly ILogger<NameRepository> logger;
-        public NameRepository(IConnection connection,ILogger<NameRepository> log) : base(connection)
+        public NameRepository(IConnection connection, ILogger<NameRepository> log) : base(connection)
         {
             logger = log;
         }
@@ -30,7 +30,7 @@ namespace Tarim.Api.Infrastructure.Service
             var uyghurNames = new Result<IList<UyghurName>> { Object = new List<UyghurName>() };
             var totalCount = GetParameter("TotalCount", MySqlDbType.Int32, 10);
             await GetResultAsync("GET_NAME_LIST",
-               
+
                 rdReader =>
                 {
                     uyghurNames.Object.Read(rdReader);
@@ -39,22 +39,22 @@ namespace Tarim.Api.Infrastructure.Service
                  GetParameter("pageNumber_in", pageNumber, MySqlDbType.Int32));
             uyghurNames.TotalCount = Convert.ToInt32(totalCount.Value);
             return uyghurNames;
-            
+
         }
 
         public async Task<Result<UyghurName>> GetUyghurName(string name)
         {
-            
-                var uyghurName = new Result<UyghurName> { Object = new UyghurName() };
-                await GetResultAsync("GET_NAME",
-                    rdReader =>
-                    {
-                        uyghurName.Object.Read(rdReader);
-                        return uyghurName;
-                    },
-                    GetParameter("name_latin_in", name, MySqlDbType.VarChar));
-                return uyghurName;
-           
+
+            var uyghurName = new Result<UyghurName> { Object = new UyghurName() };
+            await GetResultAsync("GET_NAME",
+                rdReader =>
+                {
+                    uyghurName.Object.Read(rdReader);
+                    return uyghurName;
+                },
+                GetParameter("name_latin_in", name, MySqlDbType.VarChar));
+            return uyghurName;
+
         }
 
         public async Task<Result<UyghurName>> UpdateUyghurName(UyghurName uyghurName)
@@ -74,12 +74,12 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-      public async Task<Result<UyghurName>> AddUyghurName(UyghurName uyghurName)
+        public async Task<Result<UyghurName>> AddUyghurName(UyghurName uyghurName)
         {
             var result = new Result<UyghurName> { Object = uyghurName };
-            var insertId = GetParameter("id_out",MySqlDbType.Int32,10);
+            var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
             await ExecuteNonQueryAsync("ADD_NAME",
-                GetParameter("name_ug_in",uyghurName.NameUg,MySqlDbType.VarChar),
+                GetParameter("name_ug_in", uyghurName.NameUg, MySqlDbType.VarChar),
                 GetParameter("name_latin_in", uyghurName.NameLatin, MySqlDbType.VarChar),
                 GetParameter("origin_in", uyghurName.Origin, MySqlDbType.Enum),
                 GetParameter("gender_in", uyghurName.Gender, MySqlDbType.Enum),
@@ -88,8 +88,8 @@ namespace Tarim.Api.Infrastructure.Service
                 GetParameter("description_in", uyghurName.Description, MySqlDbType.VarChar),
                 insertId
             );
-            result.Object.Id =Convert.ToInt32(insertId.Value);
-            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed; 
+            result.Object.Id = Convert.ToInt32(insertId.Value);
+            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed;
             return result;
         }
 
@@ -113,7 +113,7 @@ namespace Tarim.Api.Infrastructure.Service
                 GetParameter("user_ip_in", name.UserIp, MySqlDbType.VarChar),
                 insertId
             );
-            
+
             result.Object.Id = Convert.ToInt32(insertId.Value);
             result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed;
             return result;

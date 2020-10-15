@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Cors;
 namespace Tarim.Api.Controllers
 {
 
-   // [EnableCors("_myAllowSpecificOrigins")]
+    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     public class ProverbsController : ControllerBase
     {
@@ -27,14 +27,14 @@ namespace Tarim.Api.Controllers
             return Ok(result.Object);
         }
 
-         [HttpGet("daily/{pageSize:int}")]
+        [HttpGet("daily/{pageSize:int}")]
         public async Task<IActionResult> GetDailyProverb(int pageSize)
         {
             var result = await _proverbRepository.GetDailyProverb(pageSize);
             return Ok(result.Object);
         }
 
-        
+
         [HttpGet("proverb/{id:int}")]
         public async Task<IActionResult> GetProverb(int id)
         {
@@ -44,7 +44,7 @@ namespace Tarim.Api.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody]Proverb proverb)
+        public async Task<IActionResult> PostAsync([FromBody] Proverb proverb)
         {
             if (ModelState.IsValid)
             {
@@ -56,9 +56,9 @@ namespace Tarim.Api.Controllers
 
         // PUT api/values/5
         [HttpPut("proverb/{id:int}")]
-        public async Task<IActionResult> PutAsync([FromBody]Proverb proverb,int id)
+        public async Task<IActionResult> PutAsync([FromBody] Proverb proverb, int id)
         {
-            if (ModelState.IsValid && proverb.Id>0 && proverb.Id==id)
+            if (ModelState.IsValid && proverb.Id > 0 && proverb.Id == id)
             {
                 var result = await _proverbRepository.UpdateProverb(proverb);
                 return Ok(result);
@@ -70,7 +70,7 @@ namespace Tarim.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result =await _proverbRepository.DeleteProverb(id);
+            var result = await _proverbRepository.DeleteProverb(id);
             return Ok(result);
         }
 

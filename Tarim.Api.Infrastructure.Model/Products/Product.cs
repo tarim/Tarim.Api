@@ -33,12 +33,12 @@ namespace Tarim.Api.Infrastructure.Model.Products
         /// <summary>
         /// Get or set product name
         /// </summary>
-        public string Name { get; set; }
+        public string ProductName { get; set; }
 
         /// <summary>
         /// Get or sets product price
         /// </summary>
-        public double Price { get; set; }
+        public string Price { get; set; }
 
         /// <summary>
         /// Get or sets product type
@@ -58,7 +58,7 @@ namespace Tarim.Api.Infrastructure.Model.Products
         /// <summary>
         /// Get or sets Media Url
         /// </summary>
-        public string MediaUrl { get; set; }
+        public string MediaFile { get; set; }
 
         /// <summary>
         /// Get or sets Id

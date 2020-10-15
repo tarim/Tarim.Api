@@ -41,21 +41,27 @@ namespace Tarim.Api.Infrastructure.Service
     public class ProductsRepository : BaseRepository, IProductsRepository
     {
         private readonly ILogger<ProductsRepository> logger;
-        public ProductsRepository(IConnection connection, ILogger<ProductsRepository> log):base(connection)
+        public ProductsRepository(IConnection connection, ILogger<ProductsRepository> log) : base(connection)
         {
             logger = log;
         }
 
-      public async  Task<Result<Product>> AddProduct(Product product,int userRecid)
+        /// <summary>
+        /// Add product to store
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="userRecid"></param>
+        /// <returns></returns>
+        public async Task<Result<Product>> AddProduct(Product product, int userRecid)
         {
             var result = new Result<Product> { Object = product };
             var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
             await ExecuteNonQueryAsync("ADD_PRODUCT",
-                GetParameter("name_in", product.Name, MySqlDbType.VarChar),
+                GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
                 GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
-                GetParameter("price_in", product.Price, MySqlDbType.Double),
+                GetParameter("price_in", product.Price, MySqlDbType.VarChar),
                 GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
-                GetParameter("media_url_in", product.MediaUrl, MySqlDbType.VarChar),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
                 GetParameter("description_in", product.Description, MySqlDbType.Text),
                 GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
                 insertId
@@ -65,7 +71,37 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-       public async Task<Result<int>> DeleteProduct(int id)
+        /// <summary>
+        /// Add Today's Special product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="userRecid"></param>
+        /// <returns></returns>
+        public async Task<Result<Product>> AddTodaySpecial(Product product, int userRecid)
+        {
+            var result = new Result<Product> { Object = product };
+            var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
+            await ExecuteNonQueryAsync("ADD_PRODUCT",
+                GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
+                GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
+                GetParameter("price_in", product.Price, MySqlDbType.VarChar),
+                GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
+                GetParameter("description_in", product.Description, MySqlDbType.Text),
+                GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
+                insertId
+            );
+            result.Object.Id = Convert.ToInt32(insertId.Value);
+            result.Status = result.Object.Id > 0 ? ExecuteStatus.Success : ExecuteStatus.Failed;
+            return result;
+        }
+
+        /// <summary>
+        /// Delete Product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Result<int>> DeleteProduct(int id)
         {
             var result = new Result<int> { Object = id, Status = ExecuteStatus.Error };
             await ExecuteNonQueryAsync("DELETE_PRODUCT",
@@ -75,7 +111,26 @@ namespace Tarim.Api.Infrastructure.Service
             return result;
         }
 
-       public async Task<Result<IList<Product>>> GetAllProducts()
+        /// <summary>
+        /// Delete Today's Special product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Result<int>> DeleteTodaySpecial(int id)
+        {
+            var result = new Result<int> { Object = id, Status = ExecuteStatus.Error };
+            await ExecuteNonQueryAsync("DELETE_PRODUCT",
+                GetParameter("id_in", id, MySqlDbType.Int32)
+            );
+            result.Status = ExecuteStatus.Success;
+            return result;
+        }
+
+        /// <summary>
+        /// Get all store products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result<IList<Product>>> GetAllProducts()
         {
             var products = new Result<IList<Product>> { Object = new List<Product>() };
             await GetResultAsync("GET_ALL_PRODUCT",
@@ -89,36 +144,61 @@ namespace Tarim.Api.Infrastructure.Service
             return products;
         }
 
-        Task<Result<Product>> IProductsRepository.GetProduct(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-       public async Task<Result<IList<Product>>> GetProducts(int pageNumber)
+        /// <summary>
+        /// Get all today's special products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result<IList<Product>>> GetTodaySpecials()
         {
             var products = new Result<IList<Product>> { Object = new List<Product>() };
-            await GetResultAsync("GET_PRODUCT_LIST",
+            await GetResultAsync("GET_ALL_PRODUCT",
 
                 rdReader =>
                 {
                     products.Object.Read(rdReader);
                     return products;
-                },
-                 GetParameter("pageNumber_in", pageNumber, MySqlDbType.Int32));
-          
+                });
+
             return products;
         }
 
-      public async  Task<Result<Product>> UpdateProduct(Product product)
+
+        /// <summary>
+        /// Update product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public async Task<Result<Product>> UpdateProduct(Product product)
         {
             var result = new Result<Product> { Object = product, Status = ExecuteStatus.Error };
             await ExecuteNonQueryAsync("UPDATE_PRODUCT",
                 GetParameter("id_in", product.Id, MySqlDbType.Int32),
-                GetParameter("name_in", product.Name, MySqlDbType.VarChar),
+                GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
                 GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
-                GetParameter("price_in", product.Price, MySqlDbType.Double),
+                GetParameter("price_in", product.Price, MySqlDbType.VarChar),
                 GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
-                GetParameter("media_url_in", product.MediaUrl, MySqlDbType.VarChar),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
+                GetParameter("description_in", product.Description, MySqlDbType.VarChar)
+            );
+            result.Status = ExecuteStatus.Success;
+            return result;
+        }
+
+        /// <summary>
+        /// Update today's special product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public async Task<Result<Product>> UpdateTodaySpecial(Product product)
+        {
+            var result = new Result<Product> { Object = product, Status = ExecuteStatus.Error };
+            await ExecuteNonQueryAsync("UPDATE_PRODUCT",
+                GetParameter("id_in", product.Id, MySqlDbType.Int32),
+                GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
+                GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
+                GetParameter("price_in", product.Price, MySqlDbType.VarChar),
+                GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
                 GetParameter("description_in", product.Description, MySqlDbType.VarChar)
             );
             result.Status = ExecuteStatus.Success;
