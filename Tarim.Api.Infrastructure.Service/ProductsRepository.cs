@@ -61,7 +61,7 @@ namespace Tarim.Api.Infrastructure.Service
                 GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
                 GetParameter("price_in", product.Price, MySqlDbType.VarChar),
                 GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
-                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.VarChar),
                 GetParameter("description_in", product.Description, MySqlDbType.Text),
                 GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
                 insertId
@@ -77,16 +77,16 @@ namespace Tarim.Api.Infrastructure.Service
         /// <param name="product"></param>
         /// <param name="userRecid"></param>
         /// <returns></returns>
-        public async Task<Result<Product>> AddTodaySpecial(Product product, int userRecid)
+        public async Task<Result<SpecialProduct>> AddTodaySpecial(SpecialProduct product, int userRecid)
         {
-            var result = new Result<Product> { Object = product };
+            var result = new Result<SpecialProduct> { Object = product };
             var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
-            await ExecuteNonQueryAsync("ADD_PRODUCT",
+            await ExecuteNonQueryAsync("ADD_TODAY_SPECIAL",
                 GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
                 GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
                 GetParameter("price_in", product.Price, MySqlDbType.VarChar),
                 GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
-                GetParameter("media_file_in", product.MediaFile, MySqlDbType.Text),
+                GetParameter("media_file_in", product.MediaFile, MySqlDbType.VarChar),
                 GetParameter("description_in", product.Description, MySqlDbType.Text),
                 GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
                 insertId
@@ -119,7 +119,7 @@ namespace Tarim.Api.Infrastructure.Service
         public async Task<Result<int>> DeleteTodaySpecial(int id)
         {
             var result = new Result<int> { Object = id, Status = ExecuteStatus.Error };
-            await ExecuteNonQueryAsync("DELETE_PRODUCT",
+            await ExecuteNonQueryAsync("DELETE_TODAY_SPECIAL",
                 GetParameter("id_in", id, MySqlDbType.Int32)
             );
             result.Status = ExecuteStatus.Success;
@@ -148,10 +148,10 @@ namespace Tarim.Api.Infrastructure.Service
         /// Get all today's special products
         /// </summary>
         /// <returns></returns>
-        public async Task<Result<IList<Product>>> GetTodaySpecials()
+        public async Task<Result<IList<SpecialProduct>>> GetTodaySpecials()
         {
-            var products = new Result<IList<Product>> { Object = new List<Product>() };
-            await GetResultAsync("GET_ALL_PRODUCT",
+            var products = new Result<IList<SpecialProduct>> { Object = new List<SpecialProduct>() };
+            await GetResultAsync("GET_TODAY_SPECIAL_LIST",
 
                 rdReader =>
                 {

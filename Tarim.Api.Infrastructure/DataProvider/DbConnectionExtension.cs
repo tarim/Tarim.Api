@@ -25,8 +25,8 @@ namespace Tarim.Api.Infrastructure.DataProvider
         public static void Read(this UyghurName obj, IDataReader rdReader)
         {
             while (rdReader.Read())
-            {  
-                obj.ReadAll(rdReader); 
+            {
+                obj.ReadAll(rdReader);
             }
 
         }
@@ -65,8 +65,8 @@ namespace Tarim.Api.Infrastructure.DataProvider
         public static void Read(this Tip obj, IDataReader rdReader)
         {
             while (rdReader.Read())
-            {  
-                obj.ReadAll(rdReader); 
+            {
+                obj.ReadAll(rdReader);
             }
 
         }
@@ -85,8 +85,8 @@ namespace Tarim.Api.Infrastructure.DataProvider
         public static void Read(this Proverb obj, IDataReader rdReader)
         {
             while (rdReader.Read())
-            {  
-                obj.ReadAll(rdReader); 
+            {
+                obj.ReadAll(rdReader);
             }
 
         }
@@ -95,14 +95,14 @@ namespace Tarim.Api.Infrastructure.DataProvider
         {
             obj.Id = rdReader.GetInt("recid");
             obj.NameUg = rdReader.GetString("name_ug");
-           
+
             obj.NameLatin = rdReader.GetString("name_latin");
             obj.RelatedName = rdReader.GetString("related_name");
             obj.Origin = rdReader.GetEnum<OriginType>("origin");
             obj.Gender = rdReader.GetEnum<GenderType>("gender");
             obj.IsFamilyName = rdReader.GetBoolean("is_surname");
             obj.Description = rdReader.GetString("description");
-            
+
         }
 
         public static void Read(this IList<User> objList, IDataReader rdReader)
@@ -120,9 +120,9 @@ namespace Tarim.Api.Infrastructure.DataProvider
         {
             while (rdReader.Read())
             {
-               
+
                 obj.ReadAll(rdReader);
-               
+
             }
 
         }
@@ -167,14 +167,14 @@ namespace Tarim.Api.Infrastructure.DataProvider
         {
             obj.Id = rdReader.GetInt("recid");
             obj.Title = rdReader.GetString("title");
-           
+
             obj.Summary = rdReader.GetString("summary");
             obj.Content = rdReader.GetString("content");
             obj.Private = rdReader.GetBoolean("private");
             obj.Category = rdReader.GetEnum<TipsType>("category");
             obj.Source = rdReader.GetString("source");
             obj.UserName = rdReader.GetString("first_name");
-            
+
         }
 
         ///
@@ -187,7 +187,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.Category = rdReader.GetEnum<ProverbType>("category");
             obj.Description = rdReader.GetString("description");
             obj.UserName = rdReader.GetString("first_name");
-            
+
         }
     }
 }

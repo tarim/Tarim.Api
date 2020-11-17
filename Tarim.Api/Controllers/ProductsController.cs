@@ -89,7 +89,7 @@ namespace Tarim.Api.Controllers
         // POST api/values
         [TarimAuthorizeUser(Roles = new[] { "Admin", "Store" })]
         [HttpPost("Today-Special")]
-        public async Task<IActionResult> PostTodaySpecialAsync([FromBody] Product product)
+        public async Task<IActionResult> PostTodaySpecialAsync([FromBody] SpecialProduct product)
         {
             if (ModelState.IsValid)
             {

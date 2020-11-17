@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Tarim.Api.Infrastructure.Common.ActionFilters;
+using System.IO;
+using System.Reflection;
 
 namespace Tarim.Api
 {
@@ -47,11 +49,11 @@ namespace Tarim.Api
             //     services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true);
             //  services.AddSigningCredential();
             services.AddSingleton<IConnection>(new Connection(Configuration.GetConnectionString("Tarim:Conn")));
-            services.AddSingleton<INameRepository, NameRepository>();
-            services.AddSingleton<ITipsRepository, TipsRepository>();
-            services.AddSingleton<IProverbRepository, ProverbRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddSingleton<IProductsRepository, ProductsRepository>();
+            services.AddTransient<INameRepository, NameRepository>();
+            services.AddTransient<ITipsRepository, TipsRepository>();
+            services.AddTransient<IProverbRepository, ProverbRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProductsRepository, ProductsRepository>();
 
 
             ConfigureAuthenticationSettings(services);
@@ -73,7 +75,10 @@ namespace Tarim.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
+            app.UseSwagger(c =>
+    {
+        c.SerializeAsV2 = true;
+    });
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarim API V1");
@@ -159,12 +164,13 @@ namespace Tarim.Api
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. 
-                                    Enter 'Bearer' [space] and then your token in the text input below. 
-                                    Example: 'Bearer 12345abcdef'",
+                                    Enter 'your [token] in the text input below. 
+                                    Example: '12345abcdef'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                   {
@@ -176,14 +182,14 @@ namespace Tarim.Api
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
                           },
-                          Scheme = "oauth2",
-                          Name = "Bearer",
-                          In = ParameterLocation.Header,
-
                         },
                         new List<string>()
                       }
                     });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
     }

@@ -70,5 +70,43 @@ namespace Tarim.Api.Infrastructure.DataProvider
 
         }
 
+
+        public static void Read(this IList<SpecialProduct> objList, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                var obj = new SpecialProduct();
+                obj.ReadAll(rdReader);
+                objList.Add(obj);
+            }
+
+        }
+
+        public static void Read(this SpecialProduct obj, IDataReader rdReader)
+        {
+            while (rdReader.Read())
+            {
+                obj.ReadAll(rdReader);
+            }
+
+        }
+
+
+
+        private static void ReadAll(this SpecialProduct obj, IDataReader rdReader)
+        {
+            obj.Id = rdReader.GetInt("recid");
+            obj.ProductName = rdReader.GetString("name");
+obj.SpecialPrice = rdReader.GetString("special_price");
+            obj.Price = rdReader.GetString("price");
+            obj.ProductType = rdReader.GetString("product_type");
+            obj.MediaFile = rdReader.GetString("media_file");
+            obj.Sku = rdReader.GetString("sku");
+            obj.CreatedDate = rdReader.GetNullableDateTime("rec_create_datetime").Value;
+            obj.Description = rdReader.GetString("description");
+
+        }
+
+
     }
 }

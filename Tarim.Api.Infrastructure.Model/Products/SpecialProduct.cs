@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Nur Karluk ns.karluk@gmail.com
 //
@@ -26,34 +26,28 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Tarim.Api.Infrastructure.Common;
-using Tarim.Api.Infrastructure.Model.Products;
-
-namespace Tarim.Api.Infrastructure.Interface
+namespace Tarim.Api.Infrastructure.Model.Products
 {
-    public interface IProductsRepository
+    public class SpecialProduct : Product
     {
-        Task<Result<IList<Product>>> GetAllProducts();
+        /// <summary>
+        /// Get or set product name
+        /// </summary>
+        public string ProductId { get; set; }
 
-       // Task<Result<IList<Product>>> GetProducts(int pageNumber);
+        /// <summary>
+        /// Get or sets product price
+        /// </summary>
+        public string SpecialPrice { get; set; }
 
-      //  Task<Result<Product>> GetProduct(int id);
+        /// <summary>
+        /// Get or sets Start date
+        /// </summary>
+        public DateTime StartDate { get; set; }
 
-        Task<Result<Product>> AddProduct(Product product,int userRecid);
-
-        Task<Result<Product>> UpdateProduct(Product product);
-
-        Task<Result<int>> DeleteProduct(int id);
-
-        Task<Result<IList<SpecialProduct>>> GetTodaySpecials();
-
-        Task<Result<SpecialProduct>> AddTodaySpecial(SpecialProduct product, int userRecid);
-
-        Task<Result<Product>> UpdateTodaySpecial(Product product);
-
-        Task<Result<int>> DeleteTodaySpecial(int id);
-
+        /// <summary>
+        /// Get or sets End date
+        /// </summary>
+        public DateTime EndDate { get; set; }
     }
 }
