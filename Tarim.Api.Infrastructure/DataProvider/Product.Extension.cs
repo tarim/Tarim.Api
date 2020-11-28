@@ -91,13 +91,11 @@ namespace Tarim.Api.Infrastructure.DataProvider
 
         }
 
-
-
         private static void ReadAll(this SpecialProduct obj, IDataReader rdReader)
         {
             obj.Id = rdReader.GetInt("recid");
             obj.ProductName = rdReader.GetString("name");
-obj.SpecialPrice = rdReader.GetString("special_price");
+            obj.SpecialPrice = rdReader.GetString("special_price");
             obj.Price = rdReader.GetString("price");
             obj.ProductType = rdReader.GetString("product_type");
             obj.MediaFile = rdReader.GetString("media_file");

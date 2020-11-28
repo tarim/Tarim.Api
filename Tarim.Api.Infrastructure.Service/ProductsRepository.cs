@@ -63,7 +63,7 @@ namespace Tarim.Api.Infrastructure.Service
                 GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
                 GetParameter("media_file_in", product.MediaFile, MySqlDbType.VarChar),
                 GetParameter("description_in", product.Description, MySqlDbType.Text),
-                GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
+              //  GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
                 insertId
             );
             result.Object.Id = Convert.ToInt32(insertId.Value);
