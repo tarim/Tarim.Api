@@ -132,7 +132,6 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.FirstName = rdReader.GetString("first_name");
             obj.LastName = rdReader.GetString("last_name");
             obj.Email = rdReader.GetString("email");
-            obj.Status = rdReader.GetEnum<StatusType>("status");
             obj.Profile = rdReader.GetEnum<ProfileType>("role");
             obj.Phone = rdReader.GetString("phone");
             obj.Description = rdReader.GetString("description");

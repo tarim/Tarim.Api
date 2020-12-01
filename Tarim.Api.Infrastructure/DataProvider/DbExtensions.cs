@@ -69,8 +69,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
         }
         private static byte[] GetBlob(this IDataReader reader, int i)
         {
-            var dataReaderWrapper = reader as DataReaderWrapper;
-            if (dataReaderWrapper != null)
+            if (reader is DataReaderWrapper dataReaderWrapper)
                 return dataReaderWrapper.GetBlob(i);
             throw new NotSupportedException();
         }

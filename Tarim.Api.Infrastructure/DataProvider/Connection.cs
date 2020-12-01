@@ -29,11 +29,11 @@ namespace Tarim.Api.Infrastructure.DataProvider
             return new MySqlParameter(paramName, type) { Value = paramValue };
         }
 
-        public IDbDataParameter GetParameter(string paramName, MySqlDbType type,int size)
+        public IDbDataParameter GetParameter(string paramName, MySqlDbType type, int size)
         {
             return new MySqlParameter(paramName, type, size) { Direction = ParameterDirection.Output };
         }
-        
+
         private static void OpenConnection(IDbConnection conn)
         {
             if (conn.State == ConnectionState.Closed)
@@ -42,11 +42,9 @@ namespace Tarim.Api.Infrastructure.DataProvider
 
         private void Open(Action<IDbConnection> action)
         {
-            using (var conn = GetConn())
-            {
-                OpenConnection(conn);
-                action(conn);
-            }
+            using var conn = GetConn();
+            OpenConnection(conn);
+            action(conn);
         }
 
         private void DoWithDataReader(IDbCommand command, Action<IDataReader> action)
@@ -54,10 +52,8 @@ namespace Tarim.Api.Infrastructure.DataProvider
             Open(conn =>
             {
                 command.Connection = conn;
-                using (IDataReader dataReader = new MySqlReaderWrapper( command.ExecuteReader()))
-                {
-                    action(dataReader);
-                }
+                using IDataReader dataReader = new MySqlReaderWrapper(command.ExecuteReader());
+                action(dataReader);
             });
         }
 
@@ -85,13 +81,11 @@ namespace Tarim.Api.Infrastructure.DataProvider
 
         private static void DoWithCommand(string query, Action<IDbCommand> action, params IDbDataParameter[] parameters)
         {
-            using (var cmd = CreateCommand(query))
-            {
-                foreach (var dbParameter in parameters)
-                    cmd.Parameters.Add(dbParameter);
+            using var cmd = CreateCommand(query);
+            foreach (var dbParameter in parameters)
+                cmd.Parameters.Add(dbParameter);
 
-                action(cmd);
-            }
+            action(cmd);
         }
 
         private static void DoWithCommand<T>(string query, Func<IDbCommand, Results<T>> action, params IDbDataParameter[] parameters)
@@ -216,29 +210,23 @@ namespace Tarim.Api.Infrastructure.DataProvider
             await OpenAsync(conn =>
             {
                 command.Connection = conn;
-                using (IDataReader dataReader = new MySqlReaderWrapper( command.ExecuteReader()))
-                {
-                    actionAsync(dataReader);
-                }
+                using IDataReader dataReader = new MySqlReaderWrapper(command.ExecuteReader());
+                actionAsync(dataReader);
             });
         }
         private async Task OpenAsync(Action<IDbConnection> actionAsync)
         {
-            using (var conn = GetConn())
-            {
-                await OpenConnectionAsync(conn);
-                actionAsync(conn);
-            }
+            using var conn = GetConn();
+            await OpenConnectionAsync(conn);
+            actionAsync(conn);
         }
         private static async Task DoWithCommandAsync(string query, Func<IDbCommand, Task> actionAsync, params IDbDataParameter[] parameters)
         {
-            using (var cmd = CreateCommand(query))
-            {
-                foreach (var dbParameter in parameters)
-                    cmd.Parameters.Add(dbParameter);
+            using var cmd = CreateCommand(query);
+            foreach (var dbParameter in parameters)
+                cmd.Parameters.Add(dbParameter);
 
-                await actionAsync(cmd);
-            }
+            await actionAsync(cmd);
         }
         private static async Task OpenConnectionAsync(IDbConnection conn)
         {

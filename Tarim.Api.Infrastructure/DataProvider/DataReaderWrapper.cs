@@ -60,8 +60,7 @@ namespace Tarim.Api.Infrastructure.DataProvider
 
         public decimal GetDecimal(int i) // overriden by the wrapper
         {
-            MySqlDataReader oReader = _reader as MySqlDataReader;
-            if (oReader != null)
+            if (_reader is MySqlDataReader oReader)
             {
                 var oracleValue = oReader.GetMySqlDecimal(i);
                 return Convert.ToDecimal(oracleValue.ToDouble()); // precision issue fix
@@ -78,12 +77,11 @@ namespace Tarim.Api.Infrastructure.DataProvider
             }
             catch
             {
-                var oReader = _reader as MySqlDataReader;
-                if (oReader != null)
+                if (_reader is MySqlDataReader oReader)
                 {
                     object oracleValue = oReader.GetValue(i);
-                    if (oracleValue is MySqlDecimal)
-                        return Convert.ToDecimal(((MySqlDecimal)oracleValue).ToDouble());
+                    if (oracleValue is MySqlDecimal @decimal)
+                        return Convert.ToDecimal(@decimal.ToDouble());
                 }
                 throw;
             }
