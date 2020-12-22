@@ -55,5 +55,7 @@ namespace Tarim.Api.Infrastructure.Interface
 
         Task<Result<int>> DeleteTodaySpecial(int id);
 
+        Task<Result<IList<SpecialProduct>>> GetAllTodaySpecials();
+
     }
 }

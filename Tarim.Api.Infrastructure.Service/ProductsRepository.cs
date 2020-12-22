@@ -82,13 +82,10 @@ namespace Tarim.Api.Infrastructure.Service
             var result = new Result<SpecialProduct> { Object = product };
             var insertId = GetParameter("id_out", MySqlDbType.Int32, 10);
             await ExecuteNonQueryAsync("ADD_TODAY_SPECIAL",
-                GetParameter("name_in", product.ProductName, MySqlDbType.VarChar),
-                GetParameter("product_type_in", product.ProductType, MySqlDbType.VarChar),
-                GetParameter("price_in", product.Price, MySqlDbType.VarChar),
-                GetParameter("sku_in", product.Sku, MySqlDbType.VarChar),
-                GetParameter("media_file_in", product.MediaFile, MySqlDbType.VarChar),
-                GetParameter("description_in", product.Description, MySqlDbType.Text),
-                GetParameter("user_recid_in", userRecid, MySqlDbType.Int32),
+                GetParameter("product_id_in", product.Id, MySqlDbType.Int32),
+                GetParameter("start_date_in", product.StartDate, MySqlDbType.DateTime),
+                GetParameter("end_date_in", product.EndDate, MySqlDbType.DateTime),
+                GetParameter("special_price_in", product.SpecialPrice, MySqlDbType.VarChar),
                 insertId
             );
             result.Object.Id = Convert.ToInt32(insertId.Value);
@@ -145,13 +142,31 @@ namespace Tarim.Api.Infrastructure.Service
         }
 
         /// <summary>
-        /// Get all today's special products
+        /// Get today's special products limit 3
         /// </summary>
         /// <returns></returns>
         public async Task<Result<IList<SpecialProduct>>> GetTodaySpecials()
         {
             var products = new Result<IList<SpecialProduct>> { Object = new List<SpecialProduct>() };
             await GetResultAsync("GET_TODAY_SPECIAL_LIST",
+
+                rdReader =>
+                {
+                    products.Object.Read(rdReader);
+                    return products;
+                });
+
+            return products;
+        }
+
+        /// <summary>
+        /// Get all today's special products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result<IList<SpecialProduct>>> GetAllTodaySpecials()
+        {
+            var products = new Result<IList<SpecialProduct>> { Object = new List<SpecialProduct>() };
+            await GetResultAsync("GET_TODAY_SPECIAL_LIST_ALL",
 
                 rdReader =>
                 {

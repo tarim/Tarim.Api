@@ -100,7 +100,8 @@ namespace Tarim.Api.Infrastructure.DataProvider
             obj.ProductType = rdReader.GetString("product_type");
             obj.MediaFile = rdReader.GetString("media_file");
             obj.Sku = rdReader.GetString("sku");
-            obj.CreatedDate = rdReader.GetNullableDateTime("rec_create_datetime").Value;
+            obj.StartDate = rdReader.GetNullableDateTime("start_date").Value;
+            obj.EndDate = rdReader.GetNullableDateTime("end_date").Value;
             obj.Description = rdReader.GetString("description");
 
         }

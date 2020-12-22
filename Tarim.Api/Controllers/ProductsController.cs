@@ -36,6 +36,13 @@ namespace Tarim.Api.Controllers
         }
 
         [HttpGet("today-special")]
+        public async Task<IActionResult> GetAllTodaySpecialProducts()
+        {
+            var result = await _productsRepository.GetAllTodaySpecials();
+            return Ok(result.Object);
+        }
+
+        [HttpGet("today-special/3")]
         public async Task<IActionResult> GetTodaySpecialProducts()
         {
             var result = await _productsRepository.GetTodaySpecials();
